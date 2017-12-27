@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+	Gender Analize		
+	</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+		  $("#search_input").autocomplete({
+	      source: function( request, response ) {
+
+	      	
+			$.ajax({
+			type: "GET",
+			url: "https://api.genderize.io/?name="+$('#search_input').val(),
+			error: function(xhr, statusText) {
+				if($( "#search_input").val()=="")
+				{
+					$('#result').text("");
+				} 
+				else
+				{
+					alert("Error: "+statusText); 	
+				}
+			},
+			success: function(msg){ 
+				if(msg['gender']==null)
+				{
+					$('#result').text("Oppss, we don't know this name, sorry :/");
+				}
+				else{
+					$('#result').text("");
+					$('#result').append( "According to our prediction, <mark>"+msg['name']+"</mark> is <kbd>"+msg['gender']+"</kbd>  with <mark>"+(msg['probability']*100)+"</mark> percent accuracy.");
+				}
+			}
+			});
+
+
+	      },minLength: 0
+		});
+
+		});
+	</script>
+</head>
+<body>
+	<div class="container">
+
+		<div class="container text-center" style="margin-top:100px">
+
+			<h3>Write a <mark>name</mark>, let's find it's <mark>gender</mark>.</h3>
+			<br>
+			<input id="search_input" type="text" placeholder="Your Name" class="form-control" id="name">
+			<br>
+			<h3 id="result"></h3>
+			<br>
+		</div>
+
+	</div>
+
+</body>
+</html>
